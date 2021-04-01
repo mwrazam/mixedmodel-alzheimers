@@ -3,7 +3,7 @@ import os, itertools, json
 from mixedmodel import MixedModel as mm
 from utils import *
 
-def mlp_search(neurons, x, y, model_params, save_output=True):
+def mlp_search(neurons, x, y, model_params, full_rewrite=False, save_output=True):
     output_folder = os.path.join(os.getcwd(), "output")
     search_output_file = os.path.join(output_folder, "mlp_search_neurons.json")
     
@@ -19,9 +19,20 @@ def mlp_search(neurons, x, y, model_params, save_output=True):
             thislayer.append(i)
         expanded_neurons.append(thislayer)
 
+    # Generate all possible combinations
     combinations = [p for p in itertools.product(*expanded_neurons)]
 
+    # Load previously saved results
     output = {"neurons": list(), "results": list()}
+    if not full_rewrite:
+        # Open existing results and don't repeat these
+        with open(search_output_file, 'r') as s:
+            output = json.loads(s.read())
+
+    # Remove those configurations that we have already evaluated
+    for n in output["neurons"]:
+        if n in combinations:
+            combinations.remove(n)
 
     # Evaluate all possible combinations of neuron arrangement
     for c in combinations:
