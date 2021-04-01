@@ -20,7 +20,8 @@ pnas.bak
 .mim-env
 mim-env/
 mim-env.bak
+.vscode
+vscode/
 
 # Data director
-data/
 .DS_Store
