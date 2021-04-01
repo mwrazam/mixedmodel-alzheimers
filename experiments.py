@@ -41,9 +41,9 @@ def mlp_search(neurons, x, y, model_params, save_output=True):
         output["neurons"].append(c)
         output["results"].append(sum(accs)/len(accs))
     
-    # Output results to file
-    with open(search_output_file, 'w') as s:
-        json.dump(output, s)
+        # Output results to file
+        with open(search_output_file, 'w') as s:
+            json.dump(output, s)
 
 def run():
 
