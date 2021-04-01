@@ -50,11 +50,9 @@ def run():
     output_folder = os.path.join(os.getcwd(), "output")
 
     img1, img2, img3, img4, metadata, labels = load_data()
-    
 
     config = load_config()
     mlp_params = config['MLP_SEARCH']
-
     neurons = mlp_params["NEURONS"]
     params = mlp_params["PARAMS"]
 
