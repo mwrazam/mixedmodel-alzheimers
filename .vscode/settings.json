@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": "mim-env/bin/python",
+    "git.ignoreLimitWarning": true
+}

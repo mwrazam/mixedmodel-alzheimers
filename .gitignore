@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pnas-ad
+pnas-ad/
+pnas-ad.bak
+.pnas
+pnas/
+pnas.bak
+.mim-env
+mim-env/
+mim-env.bak
+
+# Data director
+data/
+.DS_Store

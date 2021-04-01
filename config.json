@@ -1,0 +1,17 @@
+{
+    "CNN_SEARCH" : {
+        "TODO": "NEED TO LIST OFF PARAMETERS TO DEFINE SEARCH SPACE"
+    },
+    "MLP_SEARCH" : {
+        "TODO": "NEED TO LIST OFF PARAMETERS TO DEFINE SEARCH SPACE"
+    },
+    "MODEL" : {
+        "MINIBATCH_SIZE": 5,
+        "EPOCHS": 50,
+        "LOSS": "categorical_crossentropy",
+        "OPTIMIZER": "rmsprop",
+        "PATIENCE": 10,
+        "VERBOSE_OUTPUT": 1,
+        "VALIDATION_PERCENTAGE": 0.2
+    }
+}
