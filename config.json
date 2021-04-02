@@ -1,6 +1,24 @@
 {
     "CNN_SEARCH" : {
-        "TODO": "NEED TO LIST OFF PARAMETERS TO DEFINE SEARCH SPACE"
+        "FILTERS": [4, 8, 16, 32],
+        "CONV2D_SIZE": [3, 5, 7],
+        "MAX_POOL": [2, 3, 4],
+        "LAYERS": [
+                    [],
+                    [],
+                    [],
+                    [],
+                    []
+                ],
+        "PARAMS": {
+            "MINIBATCH_SIZE": 5,
+            "EPOCHS": 250,
+            "LOSS": "categorical_crossentropy",
+            "OPTIMIZER": "rmsprop",
+            "PATIENCE": 10,
+            "VERBOSE_OUTPUT": 0,
+            "VALIDATION_PERCENTAGE": 0.2
+        }
     },
     "MLP_SEARCH" : {
         "NEURONS": [6, 8, 7, 8],
