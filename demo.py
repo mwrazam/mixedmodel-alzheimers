@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 import os
 
 from mixedmodel import MixedModel as mm
-from utils import *
+from utils import load_data, prepare_data, load_config
 
 def run(mode="mlp"):
     output_folder = os.path.join(os.getcwd(), "output")
@@ -51,5 +51,5 @@ def run(mode="mlp"):
         print(res)
 
 if __name__ == "__main__":
-    mode = "mixed" # Options are "mlp", "cnn", or "mixed"
+    mode = "cnn" # Options are "mlp", "cnn", or "mixed"
     run(mode)

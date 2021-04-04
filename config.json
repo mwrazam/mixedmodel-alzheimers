@@ -1,21 +1,15 @@
 {
     "CNN_SEARCH" : {
         "FILTERS": [4, 8, 16, 32],
-        "CONV2D_SIZE": [3, 5, 7],
+        "CONV2D_SIZE": [3, 5],
         "MAX_POOL": [2, 3, 4],
-        "LAYERS": [
-                    [],
-                    [],
-                    [],
-                    [],
-                    []
-                ],
+        "LAYERS": 3,
         "PARAMS": {
-            "MINIBATCH_SIZE": 5,
-            "EPOCHS": 250,
+            "MINIBATCH_SIZE": 64,
+            "EPOCHS": 100,
             "LOSS": "categorical_crossentropy",
             "OPTIMIZER": "rmsprop",
-            "PATIENCE": 10,
+            "PATIENCE": 20,
             "VERBOSE_OUTPUT": 0,
             "VALIDATION_PERCENTAGE": 0.2
         }
@@ -33,11 +27,11 @@
         }
     },
     "MODEL" : {
-        "MINIBATCH_SIZE": 5,
-        "EPOCHS": 50,
+        "MINIBATCH_SIZE": 4,
+        "EPOCHS": 100,
         "LOSS": "categorical_crossentropy",
-        "OPTIMIZER": "rmsprop",
-        "PATIENCE": 10,
+        "OPTIMIZER": "adam",
+        "PATIENCE": 20,
         "VERBOSE_OUTPUT": 1,
         "VALIDATION_PERCENTAGE": 0.2
     }

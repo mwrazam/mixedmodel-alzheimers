@@ -22,6 +22,11 @@ mim-env/
 mim-env.bak
 .vscode
 vscode/
+.mimad-env
+mimad-env/
+mimad-env.bak
 
 # Data director
 .DS_Store
+.vscode
+vscode/

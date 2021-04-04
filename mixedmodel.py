@@ -26,7 +26,7 @@ class MixedModel:
         if auto_build:
             self.build_model(self.mode)
 
-    def build_model(self, neurons=None, auto_compile=True):
+    def build_model(self, neurons=None, cnn_layers=None, auto_compile=True):
         if self.mode != "mixed" and len(self.input_shapes) > 1:
             raise ValueError("Cannot accept more than one input shape if mode is not mixed")
         
@@ -48,6 +48,14 @@ class MixedModel:
             inputs, x = self.build_custom_mlp(self.input_shapes[0], neurons)
             x = Dense(self.output_shape[0][0], activation="softmax")(x)
             self.model = Model(inputs, x)
+        elif self.mode == "cnn-custom":
+            #input_size = self.input_shapes[0] + (1,)
+            self.model = tf.keras.Sequential()
+            self.model.add(Input(shape=self.input_shapes[0]))
+            self.build_custom_cnn(cnn_layers)
+            self.model.add(Flatten())
+            self.model.add(Dense(6, activation="relu"))
+            self.model.add(Dense(self.output_shape[0][0], activation="softmax"))
         else:
             raise ValueError("Unrecognized mode for model generation")
 
@@ -63,7 +71,7 @@ class MixedModel:
         return inputs, x
 
     def build_default_cnn(self, input_size):
-        input_size = input_size + (1,)
+        input_size = input_size + (1,) # our images are all b&w so we need to attach the single layer here
         inputs = Input(shape=input_size)
         x = Conv2D(16, (3,3), padding="same", activation="relu")(inputs)
         x = BatchNormalization(axis=-1)(x)
@@ -73,12 +81,12 @@ class MixedModel:
         x = Conv2D(32, (3,3), padding="same", activation="relu")(x)
         x = BatchNormalization(axis=-1)(x)
         x = MaxPooling2D(pool_size=(2,2))(x)
-        x = Dropout(0.5)(x)
+        x = Dropout(0.25)(x)
 
         x = Flatten()(x)
         x = Dense(6, activation="relu")(x)
         x = BatchNormalization(axis=-1)(x)
-        x = Dropout(0.5)(x)
+        x = Dropout(0.25)(x)
 
         return inputs, x
 
@@ -90,6 +98,24 @@ class MixedModel:
         #x = Dense(self.output_shape[0][0], activation="softmax")(x)
         
         return inputs, x
+
+    def build_custom_cnn(self, layer_defs): # This will only add layers, input/output should be defined in the build_model function
+        for l in layer_defs:
+            self.model.add(self.decode_cnn_layer(l))
+            self.model.add(BatchNormalization(axis=-1))
+
+    def decode_cnn_layer(self, op):
+        k = op.keys()
+        if "conv" in k:
+            # Generate convolutional layer
+            f = op['filters']
+            s = op['conv']
+            return Conv2D(f, (s,s), padding='same', activation="relu")
+
+        if "pooling" in k:
+            # Generate pooling layer
+            s = op['pooling']
+            return MaxPooling2D((s,s))
 
     def compile_model(self):
         if self.model is not None:
