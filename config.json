@@ -3,7 +3,7 @@
         "FILTERS": [4, 8, 16, 32],
         "CONV2D_SIZE": [3, 5],
         "MAX_POOL": [2, 3, 4],
-        "LAYERS": 3,
+        "LAYERS": 4,
         "PARAMS": {
             "MINIBATCH_SIZE": 64,
             "EPOCHS": 100,

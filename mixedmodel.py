@@ -27,8 +27,8 @@ class MixedModel:
             self.build_model(self.mode)
 
     def build_model(self, neurons=None, cnn_layers=None, auto_compile=True):
-        if self.mode != "mixed" and len(self.input_shapes) > 1:
-            raise ValueError("Cannot accept more than one input shape if mode is not mixed")
+        #if self.mode != "mixed" and len(self.input_shapes) > 1:
+        #    raise ValueError("Cannot accept more than one input shape if mode is not mixed")
         
         if self.mode == "mlp":
             inputs, x = self.build_default_mlp(self.input_shapes[0])
@@ -56,8 +56,101 @@ class MixedModel:
             self.model.add(Flatten())
             self.model.add(Dense(6, activation="relu"))
             self.model.add(Dense(self.output_shape[0][0], activation="softmax"))
+        elif self.mode =="mixed-searched":
+            
+            # build model for image
+            inputs1 = Input(shape=self.input_shapes[0])
+            a = Conv2D(filters=16, kernel_size=(3,3), padding="same", activation="relu")(inputs1)
+            a = BatchNormalization(axis=-1)(a)
+            a = Dropout(0.25)(a)
+            a = Conv2D(filters=16, kernel_size=(5,5), padding="same", activation="relu")(a)
+            a = BatchNormalization(axis=-1)(a)
+            a = MaxPooling2D(pool_size=(2,2))(a)
+            a = Flatten()(a)
+            a = Dense(6, activation="relu")(a)
+
+            # build model for mlp
+            inputs2 = Input(shape=self.input_shapes[1])
+            b = Dense(10, activation="relu")(inputs2)
+            b = Dropout(0.25)(b) # removing this yieled about 58% accuracy
+            b = Dense(4, activation="relu")(b)
+            b = Dense(10, activation="relu")(b)
+
+            # concatenate
+            z = concatenate([a, b])
+
+            # softmax activation to find output
+            z = Dense(self.output_shape[0][0], activation="softmax")(z)
+
+            # create model
+            self.model = Model([inputs1, inputs2], z)
+
+        elif self.mode == "full-mixed":
+            
+            # build model for img1
+            inputs1 = Input(shape=self.input_shapes[0])
+            a = Conv2D(filters=16, kernel_size=(3,3), padding="same", activation="relu")(inputs1)
+            a = BatchNormalization(axis=-1)(a)
+            a = Dropout(0.25)(a)
+            a = Conv2D(filters=16, kernel_size=(5,5), padding="same", activation="relu")(a)
+            a = BatchNormalization(axis=-1)(a)
+            a = MaxPooling2D(pool_size=(2,2))(a)
+            a = Flatten()(a)
+            a = Dense(6, activation="relu")(a)
+
+            # build model for img2
+            inputs2 = Input(shape=self.input_shapes[1])
+            b = Conv2D(filters=16, kernel_size=(3,3), padding="same", activation="relu")(inputs2)
+            b = BatchNormalization(axis=-1)(b)
+            b = Dropout(0.25)(b)
+            b = Conv2D(filters=16, kernel_size=(5,5), padding="same", activation="relu")(b)
+            b = BatchNormalization(axis=-1)(b)
+            b = MaxPooling2D(pool_size=(2,2))(b)
+            b = Flatten()(b)
+            b = Dense(6, activation="relu")(b)
+
+            # build model for img3
+            inputs3 = Input(shape=self.input_shapes[2])
+            c = Conv2D(filters=16, kernel_size=(3,3), padding="same", activation="relu")(inputs3)
+            c = BatchNormalization(axis=-1)(c)
+            c = Dropout(0.25)(c)
+            c = Conv2D(filters=16, kernel_size=(5,5), padding="same", activation="relu")(c)
+            c = BatchNormalization(axis=-1)(c)
+            c = MaxPooling2D(pool_size=(2,2))(c)
+            c = Flatten()(c)
+            c = Dense(6, activation="relu")(c)
+
+            # build model for img4
+            inputs4 = Input(shape=self.input_shapes[3])
+            d = Conv2D(filters=16, kernel_size=(3,3), padding="same", activation="relu")(inputs4)
+            d = BatchNormalization(axis=-1)(d)
+            d = Dropout(0.25)(d)
+            d = Conv2D(filters=16, kernel_size=(5,5), padding="same", activation="relu")(d)
+            d = BatchNormalization(axis=-1)(d)
+            d = MaxPooling2D(pool_size=(2,2))(d)
+            d = Flatten()(d)
+            d = Dense(6, activation="relu")(d)
+
+            # build model for mlp
+            inputs5 = Input(shape=self.input_shapes[4])
+            e = Dense(25, activation="relu")(inputs5)
+            #e = Dropout(0.25)(e) # removing this yieled about 58% accuracy
+            #e = Dense(4, activation="relu")(e)
+            #e = Dense(10, activation="relu")(e)
+
+            # concatenate
+            z = concatenate([a, b, c, d, e])
+
+            # softmax activation to find output
+            z = Dense(self.output_shape[0][0], activation="softmax")(z)
+
+            # create model
+            self.model = Model([inputs1, inputs2, inputs3, inputs4, inputs5], z)
+
         else:
             raise ValueError("Unrecognized mode for model generation")
+
+
 
         if auto_compile:
             self.compile_model()
@@ -105,6 +198,7 @@ class MixedModel:
             self.model.add(BatchNormalization(axis=-1))
 
     def decode_cnn_layer(self, op):
+        print(op)
         k = op.keys()
         if "conv" in k:
             # Generate convolutional layer
